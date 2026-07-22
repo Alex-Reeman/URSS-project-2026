@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 
 # Parameters
 NSpins_vals = [8,16,32,64,128]
-J, mu, H = 0.4, 1.0, 0
+J, mu, H = 1, 1.0, 0
 #T = 1.5
-T_vals=[1*J,2*J,3*J,4*J,5*J]
+T_vals=[0.5*J,1*J,1.5*J,2*J,2.5*J,3*J,3.5*J,4*J,4.5*J,5*J]
 
-burn_in=10000
-sweeps=100000
+burn_in=1000
+sweeps=10000
 total_sweeps=burn_in+sweeps
 
 @njit
@@ -69,9 +69,23 @@ def free_energy_ons(NSpins,T,J,mu,H):
     f_per_spin=F_total/NSpins
     return f_per_spin,lambda_plus,lambda_minus
 
-def exact_Cv(T,J):
+def exact_Cv(N,T,J):
     beta=1/T
-    return (beta*J)**2*(1.0/np.cosh(beta*J))**2
+    #return (beta*J)**2*(1.0/np.cosh(beta*J))**2
+    x=beta*J
+    ch=np.cosh(x)
+    sh=np.sinh(x)
+    ch_N=ch**N
+    sh_N=sh**N
+    Z=ch_N+sh_N
+
+    E_mean=-N*J*(ch**(N-1)*sh+sh**(N-1)*ch)/Z
+    d2_Z=N*(J**2)*((N-1)*(ch**(N-2)*sh**2+sh**(N-2)*ch**2)+ch_N+sh_N)/Z
+
+    Var_E=d2_Z-(E_mean**2)
+    Cv_per_spin=(beta**2*Var_E)/N
+    return Cv_per_spin
+
 
 
 def sim():
@@ -81,14 +95,19 @@ def sim():
 
     fig=plt.figure(figsize=(16,3*num_N))
     gs=fig.add_gridspec(num_N,2,width_ratios=[1.2,1])
-
-    colors=plt.cm.plasma(np.linspace(0.1,0.85,len(T_vals)))
-    print("running simulation for all NSpins...")
-
     ax_cv_combined=fig.add_subplot(gs[:,1])
+
+    T_smooth=np.linspace(0.4,5.5,300)
+    T_smooth_over_J=T_smooth/J
+    T_vals_over_J=[t/J for t in T_vals]
+
+    colors=plt.cm.viridis(np.linspace(0.1,0.85,len(NSpins_vals)))
+    
+    print("running simulation for all NSpins...")
 
     for idx,NSpins in enumerate(NSpins_vals):
         ax_m=fig.add_subplot(gs[idx,0])
+        color=colors[idx]
 
         mc_Cv_list=[]
         mc_Cv_err_list=[]
@@ -97,7 +116,6 @@ def sim():
         mc_m_dict={}
         print(f"Running 1D Spin Chain Simulation (N={NSpins})...")
         t0=time.time()
-        print(f"Simulation completed")
 
     #thermo calc
         for T in T_vals:
@@ -138,21 +156,24 @@ def sim():
         ax_m.axvline(x=burn_in, color='black', linestyle="--", alpha=0.7, label="Burn-in End")
         ax_m.set_xlabel("Monte Carlo Steps")
         ax_m.set_ylabel("Magnetisation per spin ($m$)")
-        ax_m.set_title("Magnetisation Trajectories across Temperatures")
+        ax_m.set_title("Magnetisation Trajectories (N={NSpins})")
         ax_m.grid(True, linestyle=":", alpha=0.6)
         ax_m.legend(fontsize='small',loc='upper right',ncol=2)
 
+        ax_cv_combined.plot(
+            T_smooth_over_J,exact_Cv(NSpins,T_smooth,J),"-",color=color,lw=1,label=f"Theory ($N={NSpins}$)"
+        )
         ax_cv_combined.errorbar(
-            T_vals,mc_Cv_list,yerr=mc_Cv_err_list,fmt="o--",
+            T_vals_over_J,mc_Cv_list,yerr=mc_Cv_err_list,fmt="o",
+            color=color,ecolor=color,elinewidth=1.2,
             capsize=3, label=f"MC ($N={NSpins}$)"
         )
     
     #CV VS TEMP
-    T_smooth=np.linspace(0.4,5.5,300)
-    Cv_theoretical=exact_Cv(T_smooth,J)
+    #Cv_theoretical=exact_Cv(NSpins,T_smooth,J)
 
-    ax_cv_combined.plot(T_smooth,Cv_theoretical,"k-",lw=2,label=r"Theoretical")
-    ax_cv_combined.errorbar(T_vals,mc_Cv_list,yerr=mc_Cv_err_list,fmt="o",color="crimson",ecolor="black", elinewidth=1.5,capsize=4,label="MC Specific Heat $C_v$",)
+    #ax_cv_combined.plot(T_smooth,Cv_theoretical,"k-",lw=2,label=r"Theoretical")
+    #ax_cv_combined.errorbar(T_vals,mc_Cv_list,yerr=mc_Cv_err_list,fmt="o",color="crimson",ecolor="black", elinewidth=1.5,capsize=4,label="MC Specific Heat $C_v$",)
     ax_cv_combined.set_xlabel("Temperature ($T/J$)")
     ax_cv_combined.set_ylabel("Specific Heat per Spin ($C_v$)")
     ax_cv_combined.set_title("Specific Heat vs Temperature")
@@ -160,7 +181,7 @@ def sim():
     ax_cv_combined.legend()
 
     plt.tight_layout()
-    plt.savefig("1d_results_J=0.4.png",dpi=300)
+    plt.savefig("1d_results_ammended.png",dpi=300)
     plt.show()
 
 
