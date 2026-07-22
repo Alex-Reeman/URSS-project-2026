@@ -63,8 +63,6 @@ def free_energy_ons(NSpins,T,J,mu,H):
     lambda_plus=np.exp(beta*J)*(np.cosh(beta*h)+sqrt_term)
     lambda_minus=np.exp(beta*J)*(np.cosh(beta*h)-sqrt_term)
     
-    #used log rules to help if N is large (numerical stab.)
-    #log_Z=NSpins*np.log(lambda_plus)+np.log(1.0+(lambda_minus/lambda_plus)**NSpins)
     log_Z=np.log((lambda_plus**NSpins)+lambda_minus**NSpins)
 
     F_total=-(1.0/beta)*log_Z
