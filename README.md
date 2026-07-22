@@ -4,7 +4,7 @@
 <details>
 <summary><b>Click to expand Simulation Data Table</b></summary>
 
-| N | T | <E> | Cv | F (approx) |
+| N | T | Avg. E | Cv | F (approx) |
 | :---: | :---: | :---: | :---: | :---: |
 | 8 | 1 | -0.8273 | 0.5027 | -1.5204 |
 | 8 | 2 | -0.4679 | 0.2050 | -1.8542 |
@@ -35,9 +35,7 @@
 </details>
 
 \
-Magnetisation values vary less as N increases - magnetisation per spin defined as $m=\frac{1}{N} \sum_i s_i$ so $N=8$ gives $\Delta m=\frac{2}{8}$ and $N=128$ gives $\Delta m =\frac{2}{128}$
-\
-Initial results show that the data does converge to the thermodynamic limit as N increases, however $C_v$ overshoots at small N ? - first equation
+Initial results show that the data does converge to the thermodynamic limit as N increases, however $C_v$ obviously overshoots at small N 
 \
 $C_v=(\frac{J}{T})^2sech^2(\frac{J}{T})$ used assumes $N \rightarrow \infty$ (thermodynamic limit). Why did I do that? idk.
 \
@@ -51,7 +49,7 @@ Ammended code to get the theoretical value from 2nd derivatives with more data p
 <details>
 <summary><b>Click to expand Simulation Data Table</b></summary>
 
-| N | T | <E> | Cv | F (approx) |
+| N | T | Avg. E | Cv | F (approx) |
 | :---: | :---: | :---: | :---: | :---: |
 | 8 | 0.5 | -0.9982 | 0.0287 | -1.3448 |
 | 8 | 1.0 | -0.8148 | 0.5336 | -1.5079 |
