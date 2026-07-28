@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 NSpins_vals = [8,16,32,64,128]
 J, mu, H = 1, 1.0, 0
 #T = 1.5
-T_vals=[0.5*J,1*J,1.5*J,2*J,2.5*J,3*J,3.5*J,4*J,4.5*J,5*J]
+T_vals=[1*J,1.5*J,2*J,2.5*J,3*J,3.5*J,4*J,4.5*J,5*J]
 
-burn_in=1000
-sweeps=10000
+burn_in=10000
+sweeps=100000
 total_sweeps=burn_in+sweeps
 
 @njit
@@ -23,7 +23,7 @@ def chain(NSpins, total_sweeps, burn_in, T, J, mu, H):
     
     for i in range(NSpins):
         nb=spin[(i-1)%NSpins]+spin[(i+1)%NSpins]
-        current_E+=-0.5*J*spin[i]*nb+mu*H*spin[i]
+        current_E+=-J*spin[i]*nb+mu*H*spin[i]
 
     num_steps=total_sweeps-burn_in
     
@@ -86,7 +86,38 @@ def exact_Cv(N,T,J):
     Cv_per_spin=(beta**2*Var_E)/N
     return Cv_per_spin
 
+#https://dfm.io/posts/autocorr/ -- autocorrelation time estimation 
+def next_pow_2(n):
+    i=2 
+    while i<n:
+        i=i<<1
+    return i
 
+def autocorr_time(x, norm=True):
+    x=np.atleast_1d(x)
+    if len(x.shape)!=1:
+        raise ValueError("x must be 1D array")
+    n=next_pow_2(len(x))
+    #fourier transform of f is c^_f(t)
+    f=np.fft.fft(x-np.mean(x),n=2*n)
+    acf=np.fft.ifft(f*np.conjugate(f))[:len(x)].real
+    acf/=4*n
+    if norm and acf[0]!=0:
+        acf/=acf[0]
+    return acf
+
+def auto_window(taus,c=5.0):
+    #sokal automated windowing procedure
+    m=np.arange(len(taus))<c*taus
+    if np.any(m):
+        return np.argmin(m)
+    return len(taus)-1
+
+def integrated_time(x,c=5.0):
+    f=autocorr_time(x)
+    taus=2.0*np.cumsum(f)-1.0
+    window=auto_window(taus,c)
+    return max(1.0,taus[window])
 
 def sim():
     np.random.seed(int(time.time()))
@@ -120,6 +151,9 @@ def sim():
     #thermo calc
         for T in T_vals:
             m_hist,E_hist=chain(NSpins, total_sweeps, burn_in, T, J, mu, H)
+
+            #magnetisation running mean 
+            m_running_mean=np.cumsum(m_hist)/(sweeps_arr+1)
        
             E_mean=np.mean(E_hist)/NSpins
             E_var=np.var(E_hist)
@@ -131,32 +165,37 @@ def sim():
             free_energy_exact,_,_=free_energy_ons(NSpins,T,J,mu,H)
         
             num_samples=len(E_hist)
-            Cv_err=Cv*np.sqrt(2.0/(num_samples-1))
+            #Cv_err=Cv*np.sqrt(2.0/(num_samples-1))
+            #calculating c_v error using autocorrelation time
+            tau_int=integrated_time(E_hist)
+            N_eff=num_samples/tau_int
+            Cv_err=Cv*np.sqrt(2.0/(N_eff-1))
 
             mc_E_list.append(E_mean)
             mc_Cv_list.append(Cv)
             mc_Cv_err_list.append(Cv_err)
             exact_F_list.append(free_energy_exact)
-            mc_m_dict[T]=m_hist
+            mc_m_dict[T]=m_running_mean
 
             print("-"*40)
             print(f"N={NSpins} ; T={T}")
             print(f"Avg. Energy <E>: {E_mean:.4f} per spin")
             print(f"Specific Heat (Cv):{Cv:.4f} per spin")
             print(f"Approx. Free Energy (F):{free_energy_approx:.4f} per spin")
+            print(f"running mean magnetisation time avergage m(t): {m_running_mean[-1]:.4f}")
             print("-"*40)
 
         
-        #MAGNETISATION PLOT
+        #MAGNETISATION PLOT - only first 1000 sweeps
         sweeps_arr=np.arange(total_sweeps)
         for T in T_vals:
             ax_m.plot(
-                sweeps_arr, mc_m_dict[T], alpha=0.7, label=f"$T={T:.1f}J$"
+                sweeps_arr[:10000], mc_m_dict[T][:10000], alpha=0.7, label=f"$T={T:.1f}J$"
             )
         ax_m.axvline(x=burn_in, color='black', linestyle="--", alpha=0.7, label="Burn-in End")
         ax_m.set_xlabel("Monte Carlo Steps")
-        ax_m.set_ylabel("Magnetisation per spin ($m$)")
-        ax_m.set_title("Magnetisation Trajectories (N={NSpins})")
+        ax_m.set_ylabel("Mean Magnetisation ($<m>$)")
+        ax_m.set_title(f"Running Mean Magnetisation Trajectories ($N={NSpins}$)")
         ax_m.grid(True, linestyle=":", alpha=0.6)
         ax_m.legend(fontsize='small',loc='upper right',ncol=2)
 
@@ -181,7 +220,7 @@ def sim():
     ax_cv_combined.legend()
 
     plt.tight_layout()
-    plt.savefig("1d_results_ammended.png",dpi=300)
+    plt.savefig("1d_results_corrected_errors.png",dpi=300)
     plt.show()
 
 

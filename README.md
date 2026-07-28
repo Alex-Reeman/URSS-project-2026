@@ -103,3 +103,65 @@ Ammended code to get the theoretical value from 2nd derivatives with more data p
 | 128 | 5.0 | -0.1978 | 0.0378 | -3.6636 |
 
 </details>
+
+The error bars for this plot are calculated incorrectly - initially the error bars were calculated using $e=C_v\sqrt{\frac{2}{N-1}}$ which assumes all the samples are independent. This is not the case, so the error was recalculated using autocorrelation time which estimates the effective number of independent samples (https://dfm.io/posts/autocorr/).
+
+\
+Additionally, the plots for the magetisation trajectories are hard to visually understand what is going on. To ammend this, the plots were changed to calculated the running mean of the magnetisation since the value should stabilise to 0. When doing this, the $T=0.5J$ plot did not stabilise due to the temperature being too low and so the lowest value of temperature sampled changed to $T=1J$
+
+![alt text](1d_results_corrected_errors.png)
+
+<details>
+<summary><b>Click to expand Simulation Data Table</b></summary>
+
+| $N$ | $T/J$ | Avg. Energy $\langle E \rangle$ | Specific Heat $C_v$ | Approx. Free Energy $F$ | Running Mean $\langle m(t) \rangle$ |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| **8** | 1.0 | -1.8181 | 0.5287 | -2.5113 | -0.0035 |
+| **8** | 1.5 | -1.5983 | 0.3364 | -2.6380 | 0.0062 |
+| **8** | 2.0 | -1.4639 | 0.2062 | -2.8502 | -0.0030 |
+| **8** | 2.5 | -1.3820 | 0.1388 | -3.1149 | -0.0038 |
+| **8** | 3.0 | -1.3231 | 0.0993 | -3.4026 | -0.0015 |
+| **8** | 3.5 | -1.2763 | 0.0754 | -3.7023 | -0.0016 |
+| **8** | 4.0 | -1.2466 | 0.0592 | -4.0192 | -0.0023 |
+| **8** | 4.5 | -1.2195 | 0.0467 | -4.3387 | -0.0022 |
+| **8** | 5.0 | -1.1979 | 0.0385 | -4.6637 | -0.0015 |
+| **16** | 1.0 | -1.7690 | 0.4686 | -2.4622 | 0.0074 |
+| **16** | 1.5 | -1.5828 | 0.2974 | -2.6225 | 0.0087 |
+| **16** | 2.0 | -1.4630 | 0.1974 | -2.8493 | 0.0029 |
+| **16** | 2.5 | -1.3806 | 0.1373 | -3.1135 | -0.0010 |
+| **16** | 3.0 | -1.3218 | 0.0999 | -3.4012 | -0.0015 |
+| **16** | 3.5 | -1.2785 | 0.0755 | -3.7045 | 0.0005 |
+| **16** | 4.0 | -1.2455 | 0.0586 | -4.0181 | -0.0023 |
+| **16** | 4.5 | -1.2175 | 0.0471 | -4.3367 | -0.0004 |
+| **16** | 5.0 | -1.1971 | 0.0386 | -4.6628 | 0.0008 |
+| **32** | 1.0 | -1.7622 | 0.4204 | -2.4553 | 0.0074 |
+| **32** | 1.5 | -1.5843 | 0.2937 | -2.6240 | 0.0010 |
+| **32** | 2.0 | -1.4618 | 0.1958 | -2.8481 | -0.0035 |
+| **32** | 2.5 | -1.3801 | 0.1364 | -3.1130 | -0.0002 |
+| **32** | 3.0 | -1.3210 | 0.0995 | -3.4004 | 0.0002 |
+| **32** | 3.5 | -1.2767 | 0.0747 | -3.7027 | 0.0011 |
+| **32** | 4.0 | -1.2451 | 0.0588 | -4.0177 | 0.0008 |
+| **32** | 4.5 | -1.2189 | 0.0466 | -4.3380 | 0.0006 |
+| **32** | 5.0 | -1.1982 | 0.0385 | -4.6640 | -0.0004 |
+| **64** | 1.0 | -1.7616 | 0.4186 | -2.4547 | 0.0044 |
+| **64** | 1.5 | -1.5834 | 0.2916 | -2.6231 | 0.0014 |
+| **64** | 2.0 | -1.4617 | 0.1971 | -2.8480 | 0.0011 |
+| **64** | 2.5 | -1.3799 | 0.1367 | -3.1128 | 0.0008 |
+| **64** | 3.0 | -1.3218 | 0.1004 | -3.4013 | 0.0014 |
+| **64** | 3.5 | -1.2784 | 0.0756 | -3.7045 | 0.0004 |
+| **64** | 4.0 | -1.2452 | 0.0591 | -4.0178 | 0.0003 |
+| **64** | 4.5 | -1.2188 | 0.0472 | -4.3379 | -0.0008 |
+| **64** | 5.0 | -1.1976 | 0.0385 | -4.6633 | -0.0004 |
+| **128** | 1.0 | -1.7618 | 0.4220 | -2.4549 | -0.0100 |
+| **128** | 1.5 | -1.5840 | 0.2953 | -2.6238 | 0.0003 |
+| **128** | 2.0 | -1.4619 | 0.1969 | -2.8482 | 0.0000 |
+| **128** | 2.5 | -1.3801 | 0.1359 | -3.1130 | 0.0002 |
+| **128** | 3.0 | -1.3215 | 0.0996 | -3.4009 | 0.0003 |
+| **128** | 3.5 | -1.2786 | 0.0751 | -3.7047 | -0.0008 |
+| **128** | 4.0 | -1.2452 | 0.0588 | -4.0178 | 0.0002 |
+| **128** | 4.5 | -1.2188 | 0.0470 | -4.3379 | 0.0004 |
+| **128** | 5.0 | -1.1978 | 0.0382 | -4.6636 | 0.0006 |
+
+</details>
+
+Including the average magnetisation over time, it is now more clear that this value stabilises to 0 as temperature and number of spins in the chain increases.
