@@ -2,6 +2,7 @@ import numpy as np
 import time
 from numba import njit
 import matplotlib.pyplot as plt
+import pandas as pd
 
 # Parameters
 NSpins_vals = [8,16,32,64,128]
@@ -22,8 +23,8 @@ def chain(NSpins, total_sweeps, burn_in, T, J, mu, H):
     beta = 1.0/T
     
     for i in range(NSpins):
-        nb=spin[(i-1)%NSpins]+spin[(i+1)%NSpins]
-        current_E+=-J*spin[i]*nb+mu*H*spin[i]
+        nb=spin[(i+1)%NSpins]
+        current_E+=-J*spin[i]*nb-mu*H*spin[i]
 
     num_steps=total_sweeps-burn_in
     
@@ -37,13 +38,13 @@ def chain(NSpins, total_sweeps, burn_in, T, J, mu, H):
             #periodic BCs
             nb=spin[(r-1)%NSpins]+spin[(r+1)%NSpins]
             #need to take coupling and neighbour alignment into account!
-            dE=2.0*spin[r] *(J*nb-mu*H)
+            dE=2.0*spin[r] *(J*nb+mu*H)
 
             #Metropolis
             if dE<=0.0 or np.random.random()<np.exp(-dE*beta):
                 current_E+=dE
                 current_M-=2.0*spin[r]
-                spin[r]*=-1
+                spin[r]=-spin[r]
         #tracking magnetisation        
         m_hist[sweep]=current_M/NSpins
         #sample energy
@@ -120,24 +121,31 @@ def integrated_time(x,c=5.0):
     return max(1.0,taus[window])
 
 def sim():
+    results_list=[]
+
     np.random.seed(int(time.time()))
     sweeps_arr=np.arange(total_sweeps)
     num_N=len(NSpins_vals)
 
-    fig=plt.figure(figsize=(16,3*num_N))
-    gs=fig.add_gridspec(num_N,2,width_ratios=[1.2,1])
-    ax_cv_combined=fig.add_subplot(gs[:,1])
+    fig_main=plt.figure(figsize=(16,3*num_N))
+    gs_main=fig_main.add_gridspec(num_N,2,width_ratios=[1.2,1])
+    ax_cv_combined=fig_main.add_subplot(gs_main[:,1])
+
+    fig_ediff,axes_ediff=plt.subplots(num_N,1,figsize=(12,3*num_N),sharex=True)
+    if num_N==1:
+        axes_ediff=[axes_ediff]
 
     T_smooth=np.linspace(0.4,5.5,300)
     T_smooth_over_J=T_smooth/J
     T_vals_over_J=[t/J for t in T_vals]
 
     colors=plt.cm.viridis(np.linspace(0.1,0.85,len(NSpins_vals)))
+    t_colors=plt.cm.coolwarm(np.linspace(0.1,0.9,len(T_vals)))
     
     print("running simulation for all NSpins...")
 
     for idx,NSpins in enumerate(NSpins_vals):
-        ax_m=fig.add_subplot(gs[idx,0])
+        ax_m=fig_main.add_subplot(gs_main[idx,0])
         color=colors[idx]
 
         mc_Cv_list=[]
@@ -145,6 +153,7 @@ def sim():
         mc_E_list=[]
         exact_F_list=[]
         mc_m_dict={}
+        E_diffs={}
         print(f"Running 1D Spin Chain Simulation (N={NSpins})...")
         t0=time.time()
 
@@ -157,6 +166,8 @@ def sim():
        
             E_mean=np.mean(E_hist)/NSpins
             E_var=np.var(E_hist)
+            E_diffs[T]=np.diff(E_hist)
+            #print(f"time average energy difference={np.mean(E_diffs[T])}")
 
             Cv=E_var/(NSpins*(T**2))
        
@@ -177,6 +188,19 @@ def sim():
             exact_F_list.append(free_energy_exact)
             mc_m_dict[T]=m_running_mean
 
+            #results for saving to csv
+            results_list.append({
+                "NSpins":NSpins,
+                "T":T,
+                "E_mean":E_mean,
+                "Cv":Cv,
+                "Cv_err":Cv_err,
+                "F_approx":free_energy_approx,
+                "F_exact":free_energy_exact,
+                "m_running_mean":m_running_mean[-1],
+                "tau_int":tau_int,
+                "Mean Energy Difference":np.mean(E_diffs[T])
+            })
             print("-"*40)
             print(f"N={NSpins} ; T={T}")
             print(f"Avg. Energy <E>: {E_mean:.4f} per spin")
@@ -184,13 +208,27 @@ def sim():
             print(f"Approx. Free Energy (F):{free_energy_approx:.4f} per spin")
             print(f"running mean magnetisation time avergage m(t): {m_running_mean[-1]:.4f}")
             print("-"*40)
-
         
-        #MAGNETISATION PLOT - only first 1000 sweeps
+        #ENERGY DIFF PLOT
+        #running average
+        
+        for t_idx,T in enumerate(T_vals):
+            window=100
+            smoothed_dE=np.convolve(E_diffs[T],np.ones(window)/window,mode='valid')
+            ax_ediff=axes_ediff[idx]
+            ax_ediff.plot(
+                np.arange(len(smoothed_dE)), smoothed_dE, color=t_colors[t_idx], alpha=0.7, label=f"$T={T:.1f}J$")
+        ax_ediff.axhline(y=0.0,color='black',linestyle="--",alpha=0.7)
+        ax_ediff.set_ylabel(r"Energy Difference ($\langle \Delta E \rangle$)")
+        ax_ediff.set_title(f"Energy Difference Trajectories ($N={NSpins}$)")
+        ax_ediff.grid(True, linestyle=":", alpha=0.6)
+        ax_ediff.legend(fontsize='small',loc='upper right',ncol=2)
+        
+        #MAGNETISATION PLOT - only burn in sweeps
         sweeps_arr=np.arange(total_sweeps)
         for T in T_vals:
             ax_m.plot(
-                sweeps_arr[:10000], mc_m_dict[T][:10000], alpha=0.7, label=f"$T={T:.1f}J$"
+                sweeps_arr[:burn_in], mc_m_dict[T][:burn_in], alpha=0.7, label=f"$T={T:.1f}J$"
             )
         ax_m.axvline(x=burn_in, color='black', linestyle="--", alpha=0.7, label="Burn-in End")
         ax_m.set_xlabel("Monte Carlo Steps")
@@ -207,7 +245,17 @@ def sim():
             color=color,ecolor=color,elinewidth=1.2,
             capsize=3, label=f"MC ($N={NSpins}$)"
         )
-    
+
+
+    df=pd.DataFrame(results_list)
+    df.to_csv("1d_spin_chain_data.csv",index=False)
+        
+#bottom label for ediff fig
+
+    axes_ediff[-1].set_xlabel("Monte Carlo Steps")
+    fig_ediff.tight_layout()
+    fig_ediff.savefig("1d_energy_diff_trajectories.png",dpi=300)
+
     #CV VS TEMP
     #Cv_theoretical=exact_Cv(NSpins,T_smooth,J)
 
@@ -218,9 +266,8 @@ def sim():
     ax_cv_combined.set_title("Specific Heat vs Temperature")
     ax_cv_combined.grid(True, linestyle=":",alpha=0.6)
     ax_cv_combined.legend()
-
-    plt.tight_layout()
-    plt.savefig("1d_results_corrected_errors.png",dpi=300)
+    fig_main.tight_layout()
+    fig_main.savefig("1d_results_corrected_errors2.png",dpi=300)
     plt.show()
 
 
