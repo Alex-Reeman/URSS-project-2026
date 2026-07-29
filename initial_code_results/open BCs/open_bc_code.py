@@ -92,9 +92,9 @@ def exact_Cv(N,T,J):
 
     Var_E=d2_Z-(E_mean**2)
     Cv_per_spin=(beta**2*Var_E)/N
-    #return Cv_per_spin
+    return Cv_per_spin
     #https://drive.uqu.edu.sa/_/quc_physics/files/[Pathria_R_K_,_Beale_P_D_]_Statistical_mechanics.pdf chap 13.2 eq. 16
-    return ((N-1)/N)*(x)**2*(1.0/ch)**2
+    #return ((N-1)/N)*(x)**2*(1.0/ch)**2
 
 #https://dfm.io/posts/autocorr/ -- autocorrelation time estimation 
 def next_pow_2(n):
@@ -257,13 +257,13 @@ def sim():
 
 
     df=pd.DataFrame(results_list)
-    df.to_csv("1d_open_spin_chain_data.csv",index=False)
+    df.to_csv("1d_openvsclosed_spin_chain_data.csv",index=False)
         
 #bottom label for ediff fig
 
     axes_ediff[-1].set_xlabel("Monte Carlo Steps")
     fig_ediff.tight_layout()
-    fig_ediff.savefig("1d_energy_diff_open.png",dpi=300)
+    fig_ediff.savefig("1d_energy_diff_openvsclosed.png",dpi=300)
 
     #CV VS TEMP
     #Cv_theoretical=exact_Cv(NSpins,T_smooth,J)
@@ -276,7 +276,7 @@ def sim():
     ax_cv_combined.grid(True, linestyle=":",alpha=0.6)
     ax_cv_combined.legend()
     fig_main.tight_layout()
-    fig_main.savefig("1d_results_open.png",dpi=300)
+    fig_main.savefig("1d_results_openvsclosed.png",dpi=300)
     plt.show()
 
 
