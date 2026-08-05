@@ -225,3 +225,5 @@ Following this, I then ammended the code for open boundary conditions. The theor
 Looking at the results for the open boundary conditions, it can be seen that it approaches similar curves for closed boundary conditions at high N - which is expected :)
 ![alt text](1d_results_openvsclosed.png)
 
+/
+Next, I added heat baths to the spin chain with open boundary conditions. 
