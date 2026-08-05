@@ -1,5 +1,5 @@
 # URSS-project-2026
-![](1d_results.png)
+![](initial_code_results/1d_results.png)
 
 <details>
 <summary><b>Click to expand Simulation Data Table</b></summary>
@@ -44,7 +44,7 @@ Have used equation (8) from https://arxiv.org/pdf/2208.04751
 
 \
 Ammended code to get the theoretical value from 2nd derivatives with more data points because why not:
-![alt text](1d_results_ammended.png)
+![alt text](initial_code_results/1d_results_ammended.png)
 
 <details>
 <summary><b>Click to expand Simulation Data Table</b></summary>
@@ -109,7 +109,7 @@ The error bars for this plot are calculated incorrectly - initially the error ba
 \
 Additionally, the plots for the magetisation trajectories are hard to visually understand what is going on. To ammend this, the plots were changed to calculated the running mean of the magnetisation since the value should stabilise to 0. When doing this, the $T=0.5J$ plot did not stabilise due to the temperature being too low and so the lowest value of temperature sampled changed to $T=1J$
 
-![alt text](1d_results_corrected_errors.png)
+![alt text](initial_code_results/1d_results_corrected_errors.png)
 
 <details>
 <summary><b>Click to expand Simulation Data Table</b></summary>
@@ -168,7 +168,7 @@ Including the average magnetisation over time, it is now more clear that this va
 
 \
 Following this, I then ammended the code for open boundary conditions. The theoretical curves were evaluated using https://drive.uqu.edu.sa/_/quc_physics/files/[Pathria_R_K_,_Beale_P_D_]_Statistical_mechanics.pdf chap 13.2 eq. 16.
-![alt text](1d_results_open.png)
+![alt text](initial_code_results/open_BCs/1d_results_open.png)
 <details>
 <summary><b>Click to expand Simulation Data Table</b></summary>
 
@@ -223,7 +223,50 @@ Following this, I then ammended the code for open boundary conditions. The theor
 </details>
 
 Looking at the results for the open boundary conditions, it can be seen that it approaches similar curves for closed boundary conditions at high N - which is expected :)
-![alt text](1d_results_openvsclosed.png)
+![alt text](initial_code_results/open_BCs/1d_results_openvsclosed.png)
 
-/
-Next, I added heat baths to the spin chain with open boundary conditions. 
+
+Next, I added heat baths to the spin chain with open boundary conditions. First, I looked at each half of the spin chain being connected to each heat bath (one at 5J, one at 1J, visualisation below).
+
+![alt text](heat_baths/image.png)
+
+![alt text](bulkbath_heat_flux_and_profile.png)
+
+<details>
+<summary><b>Click to expand Simulation Data Table</b></summary>
+
+| $N_{\text{Spins}}$ | $\langle M \rangle_{\text{initial}}$ | $\langle M \rangle_{\text{final}}$ | Peak $\|J_i\|$ | Peak Bond Index | Time (s) |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 8 | 0.750000 | 0.003470 | -0.568560 | 3 | 1.046372 |
+| 16 | 0.500000 | -0.003976 | -0.582240 | 7 | 0.064102 |
+| 32 | 1.000000 | 0.004288 | -0.585320 | 15 | 0.128675 |
+| 64 | 0.531250 | 0.002595 | -0.580460 | 31 | 0.260713 |
+| 128 | 0.656250 | 0.001640 | -0.577900 | 63 | 0.494601 |
+
+</details>
+The graph shows that the spins with the highest magnitude of heat flux are those at the middle since they are the main interface of interactions between spins connected to each heat bath. Additionally, there is a higher variation of currents from the hot bath as opposed to the spins connected to the cool bath which had minimal variation.
+
+I then looked at heat baths that were randomly assigned to each spin along the chain
+
+![alt text](randbath_heat_flux_and_profile.png)
+
+<details>
+<summary><b>Click to expand Simulation Data Table</b></summary>
+
+| $N_{\text{Spins}}$ | $\langle M \rangle_{\text{initial}}$ | $\langle M \rangle_{\text{final}}$ | $J_{\text{left}}$ ($i=0$) | $J_{\text{right}}$ ($i=N-2$) | Bulk $\langle J \rangle$ | Time (s) |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 8 | 0.000000 | -0.000923 | 0.108560 | -0.098520 | -0.003923 | 1.510733 |
+| 16 | 0.625000 | -0.000665 | 0.101200 | -0.110180 | -0.002875 | 0.084613 |
+| 32 | 0.687500 | -0.001288 | 0.104040 | -0.118440 | -0.002877 | 0.158720 |
+| 64 | 0.750000 | -0.000467 | 0.103360 | -0.112380 | -0.000305 | 0.289987 |
+| 128 | 0.500000 | -0.000099 | 0.100320 | -0.113780 | -0.000788 | 0.671246 |
+
+</details>
+
+For these randomly assigned heat baths, the energy current is still around zero across the chain of spins, however there is a more maintained variation across the chain. At the ends, the energy current is a lot higher since it only interacts with one other spin and thus acts similarly to the middle spin in the above case of the two heat baths on each side of the chain.
+
+\
+Magnetisation for both cases drops and stabilises around zero since there is no applied magnetic field. 
+
+\
+Unlike the energy current, the running mean of energy per spin stabilises to a non-zero value in both setups.

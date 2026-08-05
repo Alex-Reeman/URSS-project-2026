@@ -116,7 +116,7 @@ def sim():
 
     np.random.seed(int(time.time()))
 
-    fig, (ax_mag,ax_energy,ax_current)=plt.subplots(1,3,figsize=(22,5))
+    fig, (ax_mag,ax_energy,ax_current)=plt.subplots(3,1,figsize=(15,15))
     colors=plt.cm.viridis(np.linspace(0.1,0.85,len(NSpins_vals)))
 
     print("running simulation for all NSpins...")
@@ -134,7 +134,7 @@ def sim():
         E_running_mean=E_hist.cumsum()/(sweeps_arr+1)
 
 
-        results_list.append({ 'NSpins': NSpins, 'mean_energy_current': mean_energy_current, 'm_running_mean': m_running_mean, 'time_elapsed': t_elapsed })
+        results_list.append({ 'NSpins': NSpins, 'mean_energy_current': mean_energy_current,'energy_running_mean' 'm_running_mean': m_running_mean, 'time_elapsed': t_elapsed })
         print(f"NSpins={NSpins}, mean_energy_current={mean_energy_current}, time_elapsed={t_elapsed:.2f}s")
 
         #x_node_open=np.linspace(0,1,NSpins-1)

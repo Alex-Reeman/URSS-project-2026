@@ -22,11 +22,13 @@ total_sweeps=burn_in+sweeps
 def chain(NSpins, total_sweeps, burn_in, T_left, T_right, J, mu, H):
     
     spin = np.ones(NSpins, dtype=np.int8)
+    bath_currents=np.zeros((2,NSpins),dtype=np.float64)
     bond_currents=np.zeros(NSpins-1,dtype=np.float64)
     current_M = float(NSpins)
 
     beta_left = 1.0/T_left
     beta_right = 1.0/T_right
+    betas=[beta_left,beta_right]
 
     m_hist=np.empty(total_sweeps,dtype=np.float64)
     E_hist=np.empty(total_sweeps,dtype=np.float64)
@@ -35,6 +37,7 @@ def chain(NSpins, total_sweeps, burn_in, T_left, T_right, J, mu, H):
         for _ in range(NSpins):
             r=np.random.randint(0,NSpins)
             heat=np.random.randint(0,2) #randomly choose which bath to couple to
+            beta=betas[heat]
             #open BCs
             nb=0.0
             if r>0:
@@ -43,13 +46,6 @@ def chain(NSpins, total_sweeps, burn_in, T_left, T_right, J, mu, H):
                 nb+=spin[r+1]
             #need to take coupling and neighbour alignment into account!
             dE=2.0*spin[r] *(J*nb+mu*H)
-
-            #assigning local bath temperature
-            if heat==0:
-                beta=beta_left
-                
-            elif heat==1:
-                beta=beta_right
                 
             #Metropolis
             if dE<=0.0 or np.random.random()<np.exp(-dE*beta):
@@ -57,21 +53,21 @@ def chain(NSpins, total_sweeps, burn_in, T_left, T_right, J, mu, H):
 
                 #if connected to hot bath
                 if sweep>=burn_in:
-                    if heat==0:
+                    bath_currents[heat,r]+=dE
+                    if r>0:
                         bond_currents[r-1]+=2.0*J*spin[r]*spin[r-1]
-                    if heat==1:
+                    if r<NSpins-1:
                         bond_currents[r]-=2.0*J*spin[r]*spin[r+1]
                 spin[r]=-spin[r]
                 #tracking heat flow
 
         m_hist[sweep]=current_M/NSpins
-        total_E=0.0
-        for i in range(NSpins-1):
-            total_E+=-J*spin[i]*spin[i+1]-mu*H*spin[i]
+        total_E=-J*np.sum(spin[:-1]*spin[1:])-mu*H*np.sum(spin)
 
         E_hist[sweep]=total_E/NSpins
 
         num_measurements=total_sweeps-burn_in
+        denom=num_measurements if num_measurements>0 else 1.0
         mean_energy_current=bond_currents/num_measurements
     return mean_energy_current,m_hist, E_hist
 
@@ -121,7 +117,7 @@ def sim():
 
     np.random.seed(int(time.time()))
 
-    fig, (ax_mag,ax_energy,ax_current)=plt.subplots(1,3,figsize=(22,5))
+    fig, (ax_mag,ax_energy,ax_current)=plt.subplots(3,1,figsize=(15,15))
     colors=plt.cm.viridis(np.linspace(0.1,0.85,len(NSpins_vals)))
 
     print("running simulation for all NSpins...")
