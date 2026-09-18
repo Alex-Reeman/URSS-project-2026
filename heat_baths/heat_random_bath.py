@@ -9,7 +9,7 @@ import pandas as pd
 
 # Parameters
 NSpins_vals = [8,16,32,64,128]
-J, mu, H = 1, 1.0, 0
+J, mu, H = 1, 1.0, 0.1
 
 T_left=5.0*J
 T_right=1.0*J

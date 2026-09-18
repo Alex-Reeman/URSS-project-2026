@@ -1,49 +1,18 @@
 # URSS-project-2026
-![](initial_code_results/1d_results.png)
 
 <details>
-<summary><b>Click to expand Simulation Data Table</b></summary>
-
-| N | T | Avg. E | Cv | F (approx) |
-| :---: | :---: | :---: | :---: | :---: |
-| 8 | 1 | -0.8273 | 0.5027 | -1.5204 |
-| 8 | 2 | -0.4679 | 0.2050 | -1.8542 |
-| 8 | 3 | -0.3243 | 0.0999 | -2.4037 |
-| 8 | 4 | -0.2441 | 0.0595 | -3.0167 |
-| 8 | 5 | -0.1946 | 0.0372 | -3.6603 |
-| 16 | 1 | -0.7684 | 0.4721 | -1.4615 |
-| 16 | 2 | -0.4622 | 0.1965 | -1.8485 |
-| 16 | 3 | -0.3185 | 0.1030 | -2.3980 |
-| 16 | 4 | -0.2475 | 0.0582 | -3.0201 |
-| 16 | 5 | -0.1927 | 0.0379 | -3.6584 |
-| 32 | 1 | -0.7619 | 0.4322 | -1.4550 |
-| 32 | 2 | -0.4611 | 0.1939 | -1.8474 |
-| 32 | 3 | -0.3222 | 0.1009 | -2.4016 |
-| 32 | 4 | -0.2446 | 0.0577 | -3.0172 |
-| 32 | 5 | -0.1979 | 0.0388 | -3.6637 |
-| 64 | 1 | -0.7631 | 0.4378 | -1.4562 |
-| 64 | 2 | -0.4602 | 0.1985 | -1.8465 |
-| 64 | 3 | -0.3225 | 0.0988 | -2.4020 |
-| 64 | 4 | -0.2451 | 0.0579 | -3.0177 |
-| 64 | 5 | -0.1986 | 0.0381 | -3.6643 |
-| 128 | 1 | -0.7655 | 0.4096 | -1.4586 |
-| 128 | 2 | -0.4610 | 0.1978 | -1.8473 |
-| 128 | 3 | -0.3203 | 0.0989 | -2.3998 |
-| 128 | 4 | -0.2439 | 0.0588 | -3.0165 |
-| 128 | 5 | -0.1977 | 0.0379 | -3.6635 |
-
-</details>
-
-\
-Initial results show that the data does converge to the thermodynamic limit as N increases, however $C_v$ obviously overshoots at small N 
-\
-$C_v=(\frac{J}{T})^2sech^2(\frac{J}{T})$ used assumes $N \rightarrow \infty$ (thermodynamic limit). Why did I do that? idk.
-\
+<summary><b>Setting up and testing the simulation code</b></summary>
+First, I set up a code which took [8,16,32,64,128] spins and looked at the specific heat against temperature of the system to compare with known theoretical results. Magnetisation trajectories were also looked at to make sure that it stabilises as it should.
 
 Have used equation (8) from https://arxiv.org/pdf/2208.04751 
-
 \
-Ammended code to get the theoretical value from 2nd derivatives with more data points because why not:
+$F_{ising}(\beta,J,h,N)=-\beta^{-1}log[\lambda_{+}^N(\beta,J,h)+\lambda_{-}^N(\beta,J,h)]$, where
+\
+$\lambda_{\pm}(\beta,J,h)=e^{\beta J}[cosh(\beta h)\pm \sqrt{sinh^2(\beta h)+e^{-4\beta J}}]$, and 
+\
+$c_v=-T\frac{\partial^2}{\partial T^2}F_{ising}(\beta,J,h,N)$, where $T=\frac{1}{\beta}$
+\
+since I have set temperature to be in units of $k_BT$
 ![alt text](initial_code_results/1d_results_ammended.png)
 
 <details>
@@ -168,7 +137,11 @@ Including the average magnetisation over time, it is now more clear that this va
 
 \
 Following this, I then ammended the code for open boundary conditions. The theoretical curves were evaluated using https://drive.uqu.edu.sa/_/quc_physics/files/[Pathria_R_K_,_Beale_P_D_]_Statistical_mechanics.pdf chap 13.2 eq. 16.
+\
+$c_v=Nk(\beta J)^2sech^2(\beta J)$
+\
 ![alt text](initial_code_results/open_BCs/1d_results_open.png)
+
 <details>
 <summary><b>Click to expand Simulation Data Table</b></summary>
 
@@ -225,12 +198,17 @@ Following this, I then ammended the code for open boundary conditions. The theor
 Looking at the results for the open boundary conditions, it can be seen that it approaches similar curves for closed boundary conditions at high N - which is expected :)
 ![alt text](initial_code_results/open_BCs/1d_results_openvsclosed.png)
 
+</details>
+
+<details>
+<summary><b>Different spin chain setups</b></summary>
+
 
 Next, I added heat baths to the spin chain with open boundary conditions. First, I looked at each half of the spin chain being connected to each heat bath (one at 5J, one at 1J, visualisation below).
 
 ![alt text](heat_baths/image.png)
 
-![alt text](bulkbath_heat_flux_and_profile.png)
+![alt text](heat_baths/bulkbath_heat_flux_and_profile.png)
 
 <details>
 <summary><b>Click to expand Simulation Data Table</b></summary>
@@ -245,10 +223,12 @@ Next, I added heat baths to the spin chain with open boundary conditions. First,
 
 </details>
 The graph shows that the spins with the highest magnitude of heat flux are those at the middle since they are the main interface of interactions between spins connected to each heat bath. Additionally, there is a higher variation of currents from the hot bath as opposed to the spins connected to the cool bath which had minimal variation.
+\
+The variation being around zero means this setup is not non-equilibrium and thus unsuitable for the project.
 
 I then looked at heat baths that were randomly assigned to each spin along the chain
 
-![alt text](randbath_heat_flux_and_profile.png)
+![alt text](heat_baths/randbath_heat_flux_and_profile.png)
 
 <details>
 <summary><b>Click to expand Simulation Data Table</b></summary>
@@ -263,10 +243,178 @@ I then looked at heat baths that were randomly assigned to each spin along the c
 
 </details>
 
-For these randomly assigned heat baths, the energy current is still around zero across the chain of spins, however there is a more maintained variation across the chain. At the ends, the energy current is a lot higher since it only interacts with one other spin and thus acts similarly to the middle spin in the above case of the two heat baths on each side of the chain.
-
 \
-Magnetisation for both cases drops and stabilises around zero since there is no applied magnetic field. 
-
+Magnetisation for both cases drops and stabilises around zero since there is no applied magnetic field. For these randomly assigned heat baths, the energy current is still around zero across the chain of spins, however there is a more maintained variation across the chain. 
 \
-Unlike the energy current, the running mean of energy per spin stabilises to a non-zero value in both setups.
+The variation being around zero means this setup is not non-equilibrium and thus unsuitable for the project.
+\
+After trying a few more ideas, we settled on a setup which takes the orientation of the spins to dictate which bath it is connected to:
+
+![alt text](image2.png)
+Where this image uses periodic boundaries. To check this model has validity for being used in mean field:
+![alt text](heat_baths/open_heat_flux_and_profile.png)
+This set of graphs uses the setup with open boundaries - where the leftmost spin is fixed to be connected to the hot bath and the rightmost spin is fixed to be connected to the cold bath and a fixed external magnetic field of $H=0.1\mu$. 
+\
+This clearly has a non-zero energy current along the bond, and the total energy current scales with the number of spins as expected for a non-equilirium system.
+\
+To make sure the Mean Field can be used, the chain was then simulated with periodic boundaries.
+![alt text](heat_baths/closed_heat_flux_and_profile.png)
+The periodic boundary conditions give the similar mean energy current results as the open conditions in the centre of the chain. Hence, I used this setup for my investigation into Mean Field Approximations.
+
+</details>
+
+<details>
+<summary><b>Investigation Into Mean Field</b></summary>
+
+The local transition operator for a 3-spin configuration is defined as:
+\
+$n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}$, where
+\
+$n_i$ is the matrix describing the spin state at site $i$:
+\
+$\begin{pmatrix}
+1\ 0\\0\ 0
+\end{pmatrix}$, for a spin that is up
+$\begin{pmatrix}
+0\ 0\\0\ 1
+\end{pmatrix}$, for a spin that is down.
+\
+$p_i$ is the flipping probability:
+\
+$p_i=e^{dE\beta}$, where $dE=2s_i(Js_{i-1}+Js_{i+1}+\mu H$
+
+Finally, $\sigma_i^\pm$ is the transition operator:
+\
+$\sigma_i^+=\begin{pmatrix}
+0\ 1\\0\ 0
+\end{pmatrix}$, for the spin to flip up, and
+$\sigma_i^-=\begin{pmatrix}
+0\ 0\\1\ 0
+\end{pmatrix}$, for a spin to flip down.
+\
+This operator is applied to a 3-spin product space:
+$\begin{pmatrix}
+1+m\\1-m
+\end{pmatrix} \begin{pmatrix}
+1+m\\1-m
+\end{pmatrix} \begin{pmatrix}
+1+m\\1-m
+\end{pmatrix}$
+\
+The result is then projected using 
+\
+$\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T$,
+which is then equated to
+$\begin{pmatrix}
+1+m\\1-m
+\end{pmatrix} $.
+\
+Alltogether, I reached the equation
+\
+$\frac{1}{8}\sum_{i=1}^8[\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T]([n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}]\begin{pmatrix}
+1+m\\1-m
+\end{pmatrix} \begin{pmatrix}
+1+m\\1-m
+\end{pmatrix} \begin{pmatrix}
+1+m\\1-m
+\end{pmatrix})=\begin{pmatrix}
+1+m\\1-m
+\end{pmatrix}$
+and finding the roots gives 
+
+![alt text](mean_field_investigation/3d_bifurcation_surface_2.png)
+ 
+which has a mean difference of 0.179 and a max difference of 0.986.
+
+<details>
+<summary><b>Initial Corrections</b></summary>
+Initially, I added corrections to the mean field equations such that it takes the assumption that magnetisation has stabilised across the chain, so each three spin product state can still be written as 
+
+
+$\begin{pmatrix}
+1+m\\1-m
+\end{pmatrix} \begin{pmatrix}
+1+m\\1-m
+\end{pmatrix} \begin{pmatrix}
+1+m\\1-m
+\end{pmatrix}$
+\
+The local transition operators applied to the three spin product space is acted upon by a double trace projection
+\
+$[\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T]$
+\
+and equated to 
+$\begin{pmatrix}
+1+m\\1-m
+\end{pmatrix}\begin{pmatrix}
+1+m\\1-m
+\end{pmatrix}$
+\
+solving the equations again:
+
+$\frac{1}{8}\sum_{i=1}^8[\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T]([n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}]\begin{pmatrix}
+1+m\\1-m
+\end{pmatrix} \begin{pmatrix}
+1+m\\1-m
+\end{pmatrix} \begin{pmatrix}
+1+m\\1-m
+\end{pmatrix})=\begin{pmatrix}
+1+m\\1-m
+\end{pmatrix}\begin{pmatrix}
+1+m\\1-m
+\end{pmatrix}$
+\
+and finding roots for m gives
+![alt text](mean_field_investigation/3d_bifurcation_surface_corrections.png)
+which gives better values for magnetisation until $T\rightarrow0$ where $m\rightarrow1$. This is a similar region for which the mean field approximations significantly diverged from the simulation. This implies the corrections are not sufficient
+</details>
+
+<details>
+<summary><b>Cluster Mean Field Corrections</b></summary>
+To further introduce corrections, rather than assuming the magnetisation had reached stabilised across the chain, each spin in the product state is given a site-dependent magnetisation:
+
+$\begin{pmatrix}
+1+m_{i-1}\\1-m_{i-1}
+\end{pmatrix} \begin{pmatrix}
+1+m_i\\1-m_i
+\end{pmatrix} \begin{pmatrix}
+1+m_{i+1}\\1-m_{i+1}
+\end{pmatrix}$
+\
+Again applying the local transition operator, and operating with double trace projections
+
+$[\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T]$
+\
+and then equating the sum to:
+
+$\begin{pmatrix}
+1+m_{i-1}\\1-m_{i-1}
+\end{pmatrix} \begin{pmatrix}
+1+m_i\\1-m_i
+\end{pmatrix}+ \begin{pmatrix}
+1+m_i\\1-m_i
+\end{pmatrix}\begin{pmatrix}
+1+m_{i+1}\\1-m_{i+1}
+\end{pmatrix}$
+\
+
+$\frac{1}{8}\sum_{i=1}^8[\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T]([n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}]\begin{pmatrix}
+1+m_{i-1}\\1-m_{i-1}
+\end{pmatrix} \begin{pmatrix}
+1+m_i\\1-m_i
+\end{pmatrix} \begin{pmatrix}
+1+m_{i+1}\\1-m_{i+1}
+\end{pmatrix}=\begin{pmatrix}
+1+m_{i-1}\\1-m_{i-1}
+\end{pmatrix} \begin{pmatrix}
+1+m_i\\1-m_i
+\end{pmatrix}+ \begin{pmatrix}
+1+m_i\\1-m_i
+\end{pmatrix}\begin{pmatrix}
+1+m_{i+1}\\1-m_{i+1}
+\end{pmatrix}$
+\
+allows us to solve for the average cluster magnetisation as $\frac{m_i+m_{i+1}}{2}$
+![alt text](image3.png)
+This evidently does much better at approximating $m\rightarrow1$ with a mean difference of 0.0530, and a max difference of 0.517.
+</details>
