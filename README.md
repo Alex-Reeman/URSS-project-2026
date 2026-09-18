@@ -272,12 +272,12 @@ $n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}$, where
 \
 $n_i$ is the matrix describing the spin state at site $i$:
 \
-$\begin{pmatrix}
+$\begin{bmatrix}
 1\ 0\\0\ 0
-\end{pmatrix}$, for a spin that is up
-$\begin{pmatrix}
+\end{bmatrix}$, for a spin that is up
+$\begin{bmatrix}
 0\ 0\\0\ 1
-\end{pmatrix}$, for a spin that is down.
+\end{bmatrix}$, for a spin that is down.
 \
 $p_i$ is the flipping probability:
 \
@@ -285,41 +285,41 @@ $p_i=e^{dE\beta}$, where $dE=2s_i(Js_{i-1}+Js_{i+1}+\mu H$
 
 Finally, $\sigma_i^\pm$ is the transition operator:
 \
-$\sigma_i^+=\begin{pmatrix}
+$\sigma_i^+=\begin{bmatrix}
 0\ 1\\0\ 0
-\end{pmatrix}$, for the spin to flip up, and
-$\sigma_i^-=\begin{pmatrix}
+\end{bmatrix}$, for the spin to flip up, and
+$\sigma_i^-=\begin{bmatrix}
 0\ 0\\1\ 0
-\end{pmatrix}$, for a spin to flip down.
+\end{bmatrix}$, for a spin to flip down.
 \
 This operator is applied to a 3-spin product space:
-$\begin{pmatrix}
+$\begin{bmatrix}
 1+m\\1-m
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m\\1-m
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m\\1-m
-\end{pmatrix}$
+\end{bmatrix}$
 \
 The result is then projected using 
 \
-$\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T$,
+$\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T\otimes I \otimes\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T$,
 which is then equated to
-$\begin{pmatrix}
+$\begin{bmatrix}
 1+m\\1-m
-\end{pmatrix} $.
+\end{bmatrix} $.
 \
 Alltogether, I reached the equation
 \
-$\frac{1}{8}\sum_{i=1}^8[\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T]([n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}]\begin{pmatrix}
+$\frac{1}{8}\sum_{i=1}^8[\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T\otimes I \otimes\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T]([n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}]\begin{bmatrix}
 1+m\\1-m
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m\\1-m
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m\\1-m
-\end{pmatrix})=\begin{pmatrix}
+\end{bmatrix})=\begin{bmatrix}
 1+m\\1-m
-\end{pmatrix}$
+\end{bmatrix}$
 and finding the roots gives 
 
 ![alt text](mean_field_investigation/3d_bifurcation_surface_2.png)
@@ -331,38 +331,38 @@ which has a mean difference of 0.179 and a max difference of 0.986.
 Initially, I added corrections to the mean field equations such that it takes the assumption that magnetisation has stabilised across the chain, so each three spin product state can still be written as 
 
 
-$\begin{pmatrix}
+$\begin{bmatrix}
 1+m\\1-m
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m\\1-m
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m\\1-m
-\end{pmatrix}$
+\end{bmatrix}$
 \
 The local transition operators applied to the three spin product space is acted upon by a double trace projection
 \
-$[\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T]$
+$[\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T]$
 \
 and equated to 
-$\begin{pmatrix}
+$\begin{bmatrix}
 1+m\\1-m
-\end{pmatrix}\begin{pmatrix}
+\end{bmatrix}\begin{bmatrix}
 1+m\\1-m
-\end{pmatrix}$
+\end{bmatrix}$
 \
 solving the equations again:
 
-$\frac{1}{8}\sum_{i=1}^8[\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T]([n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}]\begin{pmatrix}
+$\frac{1}{8}\sum_{i=1}^8[\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T]([n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}]\begin{bmatrix}
 1+m\\1-m
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m\\1-m
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m\\1-m
-\end{pmatrix})=\begin{pmatrix}
+\end{bmatrix})=\begin{bmatrix}
 1+m\\1-m
-\end{pmatrix}\begin{pmatrix}
+\end{bmatrix}\begin{bmatrix}
 1+m\\1-m
-\end{pmatrix}$
+\end{bmatrix}$
 \
 and finding roots for m gives
 ![alt text](mean_field_investigation/3d_bifurcation_surface_corrections.png)
@@ -373,46 +373,46 @@ which gives better values for magnetisation until $T\rightarrow0$ where $m\right
 <summary><b>Cluster Mean Field Corrections</b></summary>
 To further introduce corrections, rather than assuming the magnetisation had reached stabilised across the chain, each spin in the product state is given a site-dependent magnetisation:
 
-$\begin{pmatrix}
+$\begin{bmatrix}
 1+m_{i-1}\\1-m_{i-1}
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m_i\\1-m_i
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m_{i+1}\\1-m_{i+1}
-\end{pmatrix}$
+\end{bmatrix}$
 \
 Again applying the local transition operator, and operating with double trace projections
 
-$[\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T]$
+$[\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T]$
 \
 and then equating the sum to:
 
-$\begin{pmatrix}
+$\begin{bmatrix}
 1+m_{i-1}\\1-m_{i-1}
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m_i\\1-m_i
-\end{pmatrix}+ \begin{pmatrix}
+\end{bmatrix}+ \begin{bmatrix}
 1+m_i\\1-m_i
-\end{pmatrix}\begin{pmatrix}
+\end{bmatrix}\begin{bmatrix}
 1+m_{i+1}\\1-m_{i+1}
-\end{pmatrix}$
+\end{bmatrix}$
 \
 
-$\frac{1}{8}\sum_{i=1}^8[\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{pmatrix} 1 \\ 1 \end{pmatrix}^T]([n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}]\begin{pmatrix}
+$\frac{1}{8}\sum_{i=1}^8[\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T\otimes I \otimes  I+I\otimes I\otimes\begin{bmatrix} 1 \\ 1 \end{bmatrix}^T]([n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}]\begin{bmatrix}
 1+m_{i-1}\\1-m_{i-1}
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m_i\\1-m_i
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m_{i+1}\\1-m_{i+1}
-\end{pmatrix}=\begin{pmatrix}
+\end{bmatrix}=\begin{bmatrix}
 1+m_{i-1}\\1-m_{i-1}
-\end{pmatrix} \begin{pmatrix}
+\end{bmatrix} \begin{bmatrix}
 1+m_i\\1-m_i
-\end{pmatrix}+ \begin{pmatrix}
+\end{bmatrix}+ \begin{bmatrix}
 1+m_i\\1-m_i
-\end{pmatrix}\begin{pmatrix}
+\end{bmatrix}\begin{bmatrix}
 1+m_{i+1}\\1-m_{i+1}
-\end{pmatrix}$
+\end{bmatrix}$
 \
 allows us to solve for the average cluster magnetisation as $\frac{m_i+m_{i+1}}{2}$
 ![alt text](image3.png)
