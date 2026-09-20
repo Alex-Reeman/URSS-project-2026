@@ -1,5 +1,8 @@
 # URSS-project-2026
 
+<img width="724" height="1024" alt="1789916983826-f7ad581a-7144-4ca3-bd23-03f21ab91fc4_1" src="https://github.com/user-attachments/assets/8e5c038d-aedc-4d0b-8538-d78133646561" />
+
+
 <details>
 <summary><b>Setting up and testing the simulation code</b></summary>
 First, I set up a code which took [8,16,32,64,128] spins and looked at the specific heat against temperature of the system to compare with known theoretical results. Magnetisation trajectories were also looked at to make sure that it stabilises as it should.
