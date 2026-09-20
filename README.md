@@ -273,11 +273,11 @@ $n_{i-1}\otimes(p_i\sigma_i^\pm+(1-p_i)n_i)\otimes n_{i+1}$, where
 $n_i$ is the matrix describing the spin state at site $i$:
 
 $$\begin{bmatrix}
-1\ 0\\ \ 0\ 0
+1& 0\\ 0& 0
 \end{bmatrix}$$
 for a spin that is up
 $$\begin{bmatrix}
-0\ 0\\ \ 0\ 1
+0& 0\\ 0& 1
 \end{bmatrix}$$
 for a spin that is down.
 $p_i$ is the flipping probability:
@@ -287,11 +287,11 @@ $p_i=e^{dE\beta}$, where $dE=2s_i(Js_{i-1}+Js_{i+1}+\mu H)$
 Finally, $\sigma_i^\pm$ is the transition operator:
 \
 $$\sigma_i^+=\begin{bmatrix}
-0\ 1\\ 0\ 0
+0& 1\\ 0& 0
 \end{bmatrix}$$
 for the spin to flip up, and
 $$\sigma_i^-=\begin{bmatrix}
-0\ 0\\ 1\ 0
+0& 0\\ 1& 0
 \end{bmatrix}$$
 for a spin to flip down.
 \
